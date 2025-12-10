@@ -7,3 +7,6 @@ classes: PascalCase
 functions: camelCase
 classes: PascalCase
 files: camelCase
+
+proper function names:
+describe what it does. don't give any unnecessary information about inner workings.
