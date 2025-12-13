@@ -1,4 +1,21 @@
-naming conventions:
+conventions:
+# any language
+
+
+## proper function names
+describe what it does. don't give any unnecessary information about inner workings or what it's needed for. you never know if it might be used for something else.
+
+## DRY
+
+## keep it as simple as possible
+beware for unnecessary complexity. do not make a function like this:
+
+void setFrameRate(int frameRate){
+    frameRate = 60;
+}
+
+it just adds complexity and increases compile time. we can easily change this into a function when the time comes that something else needs to update when framerate changes.
+
 # PHP
 functions: snake_case
 classes: PascalCase
@@ -15,6 +32,12 @@ setData(x,y) is redundant when we have setData(pos) because we can call setData(
 use as short initializers as possible.
 int exampleVal{};
 glm::vec3 exampleVector{0,1,2};
+do not fill in any template parameters when not necessary.
+
+do not write expansive code when the same thing can be done with the same performance in less code:
+
+int sampleInt = static_cast<int>(sampleFloat);
+you can just write int sampleInt = (int)sampleFloat;
 
 # javascript
 functions: camelCase
@@ -27,13 +50,3 @@ files: snake_case
 describe what it does. don't give any unnecessary information about inner workings or what it's needed for. you never know if it might be used for something else.
 
 ## DRY
-
-## keep it as simple as possible
-beware for unnecessary complexity. do not make a function like this:
-
-void setFrameRate(int frameRate){
-    frameRate = 60;
-}
-
-it just adds complexity and increases compile time. we can easily change this into a function when the time comes that something else needs to update when framerate changes.
-
