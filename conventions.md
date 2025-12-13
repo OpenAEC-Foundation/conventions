@@ -28,4 +28,12 @@ describe what it does. don't give any unnecessary information about inner workin
 
 ## DRY
 
+## keep it as simple as possible
+beware for unnecessary complexity. do not make a function like this:
+
+void setFrameRate(int frameRate){
+    frameRate = 60;
+}
+
+it just adds complexity and increases compile time. we can easily change this into a function when the time comes that something else needs to update when framerate changes.
 
