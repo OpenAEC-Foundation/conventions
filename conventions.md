@@ -39,6 +39,10 @@ do not write expansive code when the same thing can be done with the same perfor
 int sampleInt = static_cast<int>(sampleFloat);
 you can just write int sampleInt = (int)sampleFloat;
 
+avoid using global variables. a source file can have global variables, but refrain from using those in other source files. you probably need to pass them in a function as (const) reference.
+
+to exit an outer loop without needing to set data, just use a label and goto. it's one of the few cases where goto is valid.
+
 # javascript
 functions: camelCase
 classes: PascalCase
