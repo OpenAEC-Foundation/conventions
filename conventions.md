@@ -59,4 +59,8 @@ for(int i = 0; i < 100; i++){}
 good:
 for(int cellIndex = 0; cellIndex < 100; cellIndex++){}
 
+## use enums
+
+int state = 0; is bad. use enums!
+
 ## DRY
