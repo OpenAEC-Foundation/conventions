@@ -8,6 +8,7 @@ set -e
 REPO="pexlit/Conventions"
 BRANCH="main"
 BASE_URL="https://raw.githubusercontent.com/$REPO/$BRANCH"
+API_URL="https://api.github.com/repos/$REPO/contents"
 SELF="$(realpath "$0")"
 
 # Self-update and re-exec if not already updated
@@ -19,21 +20,37 @@ if [ "$1" != "--updated" ]; then
     exec "$SELF" --updated
 fi
 
+# Function to recursively download a directory from GitHub
+download_dir() {
+    local remote_path="$1"
+    local local_path="$2"
+
+    mkdir -p "$local_path"
+
+    # Get directory contents from GitHub API
+    local contents=$(curl -fsSL "$API_URL/$remote_path?ref=$BRANCH" 2>/dev/null)
+
+    # Process each item
+    echo "$contents" | grep -E '"(name|type)"' | paste - - | while read -r line; do
+        local name=$(echo "$line" | grep -o '"name": *"[^"]*"' | cut -d'"' -f4)
+        local type=$(echo "$line" | grep -o '"type": *"[^"]*"' | cut -d'"' -f4)
+
+        if [ "$type" == "file" ]; then
+            echo "  - $remote_path/$name"
+            curl -fsSL "$BASE_URL/$remote_path/$name" -o "$local_path/$name"
+        elif [ "$type" == "dir" ]; then
+            download_dir "$remote_path/$name" "$local_path/$name"
+        fi
+    done
+}
+
 # Download CONVENTIONS.md
 echo "Downloading CONVENTIONS.md..."
 curl -fsSL "$BASE_URL/conventions.md" -o CONVENTIONS.md
 
-# Download .claude/agents/ files
-echo "Downloading .claude/agents/..."
-mkdir -p .claude/agents
-
-# Get list of agent files from GitHub API
-AGENTS=$(curl -fsSL "https://api.github.com/repos/$REPO/contents/.claude/agents?ref=$BRANCH" 2>/dev/null | grep '"name"' | cut -d'"' -f4)
-
-for agent in $AGENTS; do
-    echo "  - $agent"
-    curl -fsSL "$BASE_URL/.claude/agents/$agent" -o ".claude/agents/$agent"
-done
+# Download .claude/ folder recursively
+echo "Downloading .claude/..."
+download_dir ".claude" ".claude"
 
 # Add synced files to .gitignore if not already present
 echo "Updating .gitignore..."
