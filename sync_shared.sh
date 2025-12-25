@@ -12,8 +12,8 @@ main() {
     SELF="$(realpath "$0")"
 
     # Self-update first
-    echo "Updating sync-shared.sh..."
-    curl -fsSL "$BASE_URL/sync-shared.sh" -o "$SELF"
+    echo "Updating sync_shared.sh..."
+    curl -fsSL "$BASE_URL/sync_shared.sh" -o "$SELF"
     chmod +x "$SELF"
 
     # Download CONVENTIONS.md
@@ -30,6 +30,17 @@ main() {
     for agent in $AGENTS; do
         echo "  - $agent"
         curl -fsSL "$BASE_URL/.claude/agents/$agent" -o ".claude/agents/$agent"
+    done
+
+    # Add synced files to .gitignore if not already present
+    echo "Updating .gitignore..."
+    touch .gitignore
+
+    for entry in "CONVENTIONS.md" ".claude/"; do
+        if ! grep -qxF "$entry" .gitignore; then
+            echo "$entry" >> .gitignore
+            echo "  Added $entry to .gitignore"
+        fi
     done
 
     echo "Done!"
