@@ -56,7 +56,7 @@ download_dir ".claude" ".claude"
 echo "Updating .gitignore..."
 touch .gitignore
 
-for entry in "CONVENTIONS.md" ".claude/"; do
+for entry in "CONVENTIONS.md" ".claude/" "sync_shared.sh"; do
     if ! grep -qxF "$entry" .gitignore; then
         echo "$entry" >> .gitignore
         echo "  Added $entry to .gitignore"
