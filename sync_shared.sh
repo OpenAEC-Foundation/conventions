@@ -46,7 +46,7 @@ download_dir() {
 
 # Download CONVENTIONS.md
 echo "Downloading CONVENTIONS.md..."
-curl -fsSL "$BASE_URL/conventions.md" -o CONVENTIONS.md
+curl -fsSL "$BASE_URL/CONVENTIONS.md" -o CONVENTIONS.md
 
 # Download .claude/ folder recursively
 echo "Downloading .claude/..."
