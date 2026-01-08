@@ -10,6 +10,7 @@ BRANCH="main"
 BASE_URL="https://raw.githubusercontent.com/$REPO/$BRANCH"
 API_URL="https://api.github.com/repos/$REPO/contents"
 SELF="$(realpath "$0")"
+BASE_DIR=".."
 
 # Self-update and re-exec if not already updated
 if [ "$1" != "--updated" ]; then
@@ -46,11 +47,11 @@ download_dir() {
 
 # Download CONVENTIONS.md
 echo "Downloading CONVENTIONS.md..."
-curl -fsSL "$BASE_URL/CONVENTIONS.md" -o CONVENTIONS.md
+curl -fsSL "$BASE_URL/CONVENTIONS.md" -o ${BASE_DIR}/CONVENTIONS.md
 
 # Download .claude/ folder recursively
 echo "Downloading .claude/..."
-download_dir ".claude" ".claude"
+download_dir ".claude" "${BASE_DIR}/.claude"
 
 # Add synced files to .gitignore if not already present
 echo "Updating .gitignore..."
