@@ -1,4 +1,4 @@
-conventions:
+to view naming conventions, check conventions.yaml.
 
 # idea
 the core idea of our coding style is as follows:
@@ -132,3 +132,4 @@ to exit an outer loop without needing to set data, just use a label and goto. it
 
 
 set opengl states before each draw call, and do not reset them. this saves code and reduces complexity.
+
