@@ -27,7 +27,6 @@ instead, create a new file like 'math/randomFunctions.cpp'.
 
 files should be in a directory that makes sense.
 blackhole.cpp should be inside a folder like 'celestial_body'.
-folder names are singular and snake_case.
 
 each struct and enum should have it's own file.
 
@@ -107,15 +106,7 @@ make sure your code is understandable by prefixing direction vectors with their 
 bodyRight, cameraUp
 localRotation, worldRotation
 
-# PHP
-functions: snake_case
-classes: PascalCase
-files: snake_case
-
 # C++
-functions: camelCase
-classes: PascalCase
-files: camelCase
 
 make all functions constexpr where possible. don't add overloads for arguments which can be combined into arguments for an existing overload.
 setData(x,y) is redundant when we have setData(pos) because we can call setData({x,y})
@@ -141,8 +132,3 @@ to exit an outer loop without needing to set data, just use a label and goto. it
 
 
 set opengl states before each draw call, and do not reset them. this saves code and reduces complexity.
-
-# javascript
-functions: camelCase
-classes: PascalCase
-files: snake_case

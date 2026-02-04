@@ -1,0 +1,58 @@
+# OpenAEC Foundation Conventions
+
+naming:
+  # Case style definitions
+  case:
+    snake_case:
+      pattern: "^[a-z][a-z0-9_]*$"
+
+    kebab-case:
+      pattern: "^[a-z][a-z0-9-]*$"
+
+    PascalCase:
+      pattern: "^[A-Z][a-zA-Z0-9]*$"
+
+    camelCase:
+      pattern: "^[a-z][a-zA-Z0-9]*$"
+
+    SCREAMING_SNAKE_CASE:
+      pattern: "^[A-Z][A-Z0-9_]*$"
+
+  # Repository naming
+  repository:
+    case: kebab-case
+
+  # Directory naming
+  directory:
+    case: snake_case
+
+  # Language-specific naming
+  language:
+    php:
+      function: snake_case
+      class: PascalCase
+      file: snake_case
+
+    cpp:
+      function: camelCase
+      class: PascalCase
+      file: camelCase
+
+    javascript:
+      function: camelCase
+      class: PascalCase
+      file: snake_case
+
+    python:
+      function: snake_case
+      class: PascalCase
+      file: snake_case
+      module: snake_case
+      constant: SCREAMING_SNAKE_CASE
+
+    typescript:
+      function: camelCase
+      class: PascalCase
+      interface: PascalCase
+      type: PascalCase
+      file: kebab-case
