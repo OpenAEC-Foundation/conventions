@@ -6,3 +6,4 @@ Coding conventions and style guide for OpenAEC Foundation projects.
 
 - `CONVENTIONS.md` — detailed coding style guide
 - `conventions.yaml` — machine-readable convention definitions used by [repo-cleaner](https://github.com/OpenAEC-Foundation/repo-cleaner)
+- `RUST.md` — enforced Rust conventions and their official Rust-project sources

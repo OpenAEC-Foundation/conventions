@@ -15,6 +15,9 @@ naming:
     camelCase:
       pattern: "^[a-z][a-zA-Z0-9]*$"
 
+    SCREAMING_SNAKE_CASE:
+      pattern: "^[A-Z][A-Z0-9_]*$"
+
   # Repository naming
   repository:
     case: kebab-case
@@ -38,4 +41,13 @@ naming:
     javascript:
       function: camelCase
       class: PascalCase
+      file: snake_case
+
+    rust:
+      namespace: snake_case
+      class: PascalCase
+      function: snake_case
+      variable: snake_case
+      constant: SCREAMING_SNAKE_CASE
+      enum: PascalCase
       file: snake_case
