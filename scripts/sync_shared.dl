@@ -1,0 +1,158 @@
+import lib/filesystem.dl
+import lib/host.dl
+import lib/json.dl
+import lib/path.dl
+import lib/process.dl
+import lib/text.dl
+
+function stop with {string:message}:
+    execute:
+        write ((the string form of "Error: " + the string form of message) + the string form of "\n") to standard error
+        exit the program with status 1
+
+function native path {string:left} joined with {string:right}:
+    execute:
+        set style to the native path style
+        if style failed or style is unsupported:
+            stop with style's error message
+        set result to left joined with right using style's value
+        if result failed:
+            stop with result's error message
+        return result's value
+
+function require executable {string:name}:
+    execute:
+        set result to the executable named name
+        if result failed or result is unsupported:
+            stop with result's error message
+        if result was absent:
+            set message to (the string form of name) + (the string form of " is required")
+            stop with message
+        return result's value
+
+function execute sync {process command:command}:
+    execute:
+        run command and set result to it
+        if result failed to launch or result failed:
+            stop with result's error message
+        if result's exit code != (0 as a 64 bit integer):
+            if result's standard error is not empty:
+                write result's standard error to standard error
+            stop with (the string form of "command exited with status " + the string form of result's exit code)
+        return result's standard output
+
+function command line contains {C string:expected}:
+    execute:
+        set arguments to the command line arguments
+        set index to 0
+        loop while index < arguments' length:
+            if the argument at index in arguments = expected:
+                return true
+            set index to index + 1
+        return false
+
+function download file {string:url} to {string:destination} using {string:curl}:
+    execute:
+        set command to a process command for curl
+        add "-fsSL" as an argument to command
+        add url as an argument to command
+        add "-o" as an argument to command
+        add destination as an argument to command
+        ignore execute sync command
+
+function download directory {string:remote} to {string:local} using {string:curl}:
+    execute:
+        create a directory tree at local
+        if it failed:
+            stop with the error message of it
+        set command to a process command for curl
+        add "-fsSL" as an argument to command
+        add ((the string form of "https://api.github.com/repos/pexlit/Conventions/contents/" + remote) + the string form of "?ref=main") as an argument to command
+        set source to execute sync command
+        parse source as JSON
+        if it failed:
+            stop with (the string form of "invalid GitHub response at byte " + the string form of the JSON error position in it)
+        set entries to the value of it
+        if entries is not a JSON array:
+            stop with (the string form of "GitHub did not return a directory for " + remote)
+        set index to 0
+        loop while index < the number of JSON items in entries:
+            set entry to the JSON value at index index in entries
+            set name to the JSON text named "name" in entry
+            set kind to the JSON text named "type" in entry
+            set remote_path to (((the string form of remote + the string form of "/") + name) as a string)
+            set local_path to native path local joined with name
+            if kind = "file":
+                print (the string form of "  - " + remote_path) as a line
+                download file ((the string form of "https://raw.githubusercontent.com/pexlit/Conventions/main/" + remote_path)) to local_path using curl
+            else if kind = "dir":
+                download directory remote_path to local_path using curl
+            else:
+                stop with (the string form of "unsupported GitHub entry type: " + kind)
+            set index to index + 1
+        free entries
+        return nothing
+
+set location to the running executable directory
+if location failed or location is unsupported:
+    stop with location's error message
+set style to the native path style
+if style failed or style is unsupported:
+    stop with style's error message
+set root_result to the parent path of location's value using style's value
+if root_result failed:
+    stop with root_result's error message
+set root to root_result's value
+set curl to require executable "curl"
+
+if (command line contains "--updated") = false:
+    print "Updating sync_shared.dl..." as a line
+    set source_path to native path root joined with "scripts/sync_shared.dl"
+    set source_update to native path root joined with "scripts/sync_shared.updated.dl"
+    set executable_path_result to the running executable path
+    if executable_path_result failed or executable_path_result is unsupported:
+        stop with executable_path_result's error message
+    set executable_path to executable_path_result's value
+    set executable_update to executable_path + the string form of ".updated"
+    download file "https://raw.githubusercontent.com/OpenAEC-Foundation/conventions/main/scripts/sync_shared.dl" to source_update using curl
+    set dynlex to require executable "dynlex"
+    set compiler to a process command for dynlex
+    add source_update as an argument to compiler
+    add "-o" as an argument to compiler
+    add executable_update as an argument to compiler
+    ignore execute sync compiler
+    rename the filesystem entry at source_update to source_path
+    if it failed:
+        stop with the error message of it
+    rename the filesystem entry at executable_update to executable_path
+    if it failed:
+        stop with the error message of it
+    set updated to a process command for executable_path
+    add "--updated" as an argument to updated
+    ignore execute sync updated
+    exit the program with status 0
+
+print "Downloading CONVENTIONS.md..." as a line
+download file "https://raw.githubusercontent.com/pexlit/Conventions/main/CONVENTIONS.md" to (native path root joined with "CONVENTIONS.md") using curl
+print "Downloading .claude/..." as a line
+download directory ".claude" to (native path root joined with ".claude") using curl
+
+set ignore_path to native path root joined with ".gitignore"
+set existing_entries to the string form of ""
+if ignore_path is a regular file:
+    read the file at ignore_path
+    if it failed:
+        stop with the error message of it
+    set existing_entries to the contents of it
+set required_entries to ["CONVENTIONS.md", ".claude/", "scripts/sync_shared.dl"]
+set entry_index to 0
+loop while entry_index < 3:
+    set entry to the item at entry_index in required_entries
+    set line to the string form of entry + the string form of "\n"
+    if (existing_entries contains line) = false:
+        append line to the file at ignore_path
+        if it failed:
+            stop with the error message of it
+        set existing_entries to existing_entries + line
+    set entry_index to entry_index + 1
+print "Done!" as a line
