@@ -7,3 +7,35 @@ Coding conventions and style guide for OpenAEC Foundation projects.
 - `CONVENTIONS.md` — detailed coding style guide
 - `conventions.yaml` — machine-readable convention definitions used by [repo-cleaner](https://github.com/OpenAEC-Foundation/repo-cleaner)
 - `RUST.md` — enforced Rust conventions and their official Rust-project sources
+
+## Shared issue assignment
+
+Repositories can call `.github/workflows/auto-assign-issues.yml` to assign newly
+opened issues to their product owners:
+
+```yaml
+name: Auto-assign issues to product owner
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  assign:
+    uses: OpenAEC-Foundation/conventions/.github/workflows/auto-assign-issues.yml@main
+    with:
+      assignees: '["JohnHeikens"]'
+```
+
+The required `assignees` input is a JSON array of GitHub usernames and supports
+multiple owners. The workflow uses the calling repository's token and issue
+number. Callers must grant `issues: write`; reusable workflows cannot increase
+their callers' permissions. No additional token or secret is required.
+
+Callers that also assign pull requests can retain their `pull_request: opened`
+trigger and grant `pull-requests: write` alongside `issues: write`. Assignment
+errors fail the workflow so they remain visible. Calls reference `@main` so
+changes to the shared implementation apply to all callers.
