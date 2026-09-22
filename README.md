@@ -35,6 +35,22 @@ multiple owners. The workflow uses the calling repository's token and issue
 number. Callers must grant `issues: write`; reusable workflows cannot increase
 their callers' permissions. No additional token or secret is required.
 
+To assign an existing issue manually, add this trigger to the caller:
+
+```yaml
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Existing issue number to assign
+        required: true
+        type: number
+```
+
+Pass `issue_number: ${{ inputs.issue_number || github.event.issue.number || github.event.pull_request.number }}`
+alongside `assignees` in the calling job's `with` block. The optional
+`issue_number` input otherwise defaults to the triggering issue or pull request.
+Manual runs require write access to the calling repository.
+
 Callers that also assign pull requests can retain their `pull_request: opened`
 trigger and grant `pull-requests: write` alongside `issues: write`. Assignment
 errors fail the workflow so they remain visible. Calls reference `@main` so
