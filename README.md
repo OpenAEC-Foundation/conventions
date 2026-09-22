@@ -46,9 +46,10 @@ To assign an existing issue manually, add this trigger to the caller:
         type: number
 ```
 
-Pass `issue_number: ${{ inputs.issue_number || github.event.issue.number || github.event.pull_request.number }}`
+Pass `issue_number: ${{ fromJSON(format('{0}', inputs.issue_number || github.event.issue.number || github.event.pull_request.number)) }}`
 alongside `assignees` in the calling job's `with` block. The optional
 `issue_number` input otherwise defaults to the triggering issue or pull request.
+The conversion ensures manually entered values are passed as numbers.
 Manual runs require write access to the calling repository.
 
 Callers that also assign pull requests can retain their `pull_request: opened`
