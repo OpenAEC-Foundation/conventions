@@ -133,3 +133,11 @@ to exit an outer loop without needing to set data, just use a label and goto. it
 
 set opengl states before each draw call, and do not reset them. this saves code and reduces complexity.
 
+
+# issues
+
+do not pick up an issue labelled `triage`. it was reported from outside the organisation and the product owner has not decided yet whether we want to work on it.
+
+an issue labelled `extern` without `triage` may be worked on: either the product owner released it, or it comes from a trusted partner. issues you or another member opened can be picked up as usual.
+
+when you are unsure who opened an issue, check whether the author is a member of the organisation before starting.
