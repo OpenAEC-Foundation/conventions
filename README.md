@@ -56,3 +56,16 @@ Callers that also assign pull requests can retain their `pull_request: opened`
 trigger and grant `pull-requests: write` alongside `issues: write`. Assignment
 errors fail the workflow so they remain visible. Calls reference `@main` so
 changes to the shared implementation apply to all callers.
+
+## External issues and triage
+
+The same workflow labels every newly opened issue from outside the organisation
+with `extern` and `triage`: authors who are not an owner, member or collaborator,
+and issues created by the `openaec-feedback` app (website and app feedback).
+Other bots are left alone. Callers need no changes.
+
+- `extern`: reported by someone outside the organisation.
+- `triage`: not yet reviewed by the product owner. Do not work on it.
+
+The product owner reviews the issue and either removes `triage` (it may be picked
+up) or closes it, for example as `wontfix`. See *issues* in `CONVENTIONS.md`.
