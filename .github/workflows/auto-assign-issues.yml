@@ -37,12 +37,13 @@ jobs:
             });
 
       # issues from outside the organisation (including the feedback app) wait for the product owner.
-      # other bots are left alone.
+      # partners are external but trusted: they only get 'extern'. other bots are left alone.
       - name: Label external issues for triage
         if: github.event_name == 'issues' && github.event.action == 'opened'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           script: |
+            const partners = ['UserDevtec', 'balrobs'];
             const issue = context.payload.issue;
             const internal = ['OWNER', 'MEMBER', 'COLLABORATOR'].includes(issue.author_association);
             const feedbackApp = issue.user.login === 'openaec-feedback[bot]';
@@ -53,5 +54,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issue.number,
-              labels: ['extern', 'triage']
+              labels: partners.includes(issue.user.login) ? ['extern'] : ['extern', 'triage']
             });

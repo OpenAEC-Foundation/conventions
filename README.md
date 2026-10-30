@@ -64,7 +64,10 @@ with `extern` and `triage`: authors who are not an owner, member or collaborator
 and issues created by the `openaec-feedback` app (website and app feedback).
 Other bots are left alone. Callers need no changes.
 
-- `extern`: reported by someone outside the organisation.
+Partners are external but trusted: their issues only get `extern`, no `triage`.
+The list lives in the workflow (`partners`); currently `UserDevtec` and `balrobs`.
+
+- `extern`: reported by someone outside the organisation (feedback or partner).
 - `triage`: not yet reviewed by the product owner. Do not work on it.
 
 The product owner reviews the issue and either removes `triage` (it may be picked
